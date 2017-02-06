@@ -14,7 +14,7 @@ app.post('/deploy', jsonParser, function (req, res) {
   function puts(error, stdout, stderr) { 
     sys.puts(stdout)
   }
-  if (branch == 'sandbox' || branch == 'production'){
+  if (branch == 'sandbox' || branch == 'master'){
     console.log('Iniciando el deploy de la rama '+ branch +' - '+new Date());
     exec("cd /home/vheurope && sh deployVheurope.sh " + branch, puts);
     res.send('Iniciando el deploy de la rama '+ branch +' (resertrip) - '+new Date());
@@ -50,7 +50,7 @@ app.get('/logs/:limit', function(req, res){
 
     var linesData = data.trim().split('\n');
 
-
+    
     var content = '';
     var totalLines = linesData.length-req.params.limit;
     for (var i = 0; i < req.params.limit; i++) {

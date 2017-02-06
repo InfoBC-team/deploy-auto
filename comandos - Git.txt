@@ -1,0 +1,59 @@
+--------- archivos ---------
+
+git add archivo											para agregar un archivo al ultimo commit
+git commit --amend -m "el comentario"
+
+git commit --amend -m "el comentario"					tambien sirve para cambiar el ultimo commit y luego subirlo con 
+														git push origin master -f
+
+--------- Reset ---------
+
+git reset --hard HEAD^									para quitar todos los commits
+git reset --soft HEAD^									para regresar el ultimo commit al stage
+
+git remote -v 											para ver los remote configurados en el repositorio
+
+git checkout -b rama 									para cambiar y crear de una vez una rama nueva
+
+--------- Tags ---------
+
+git tag 												para listar los tags y crear un nuevo tag para subirlo
+git tag -a v1.0.0.2 -m "comentario v1.0.0.2"
+git push --tags
+
+--------- Accesos directos a comandos ---------
+
+git config --global alias.st status						podemos crear alias para los logs o comandos
+git config --global alias.co checkout
+git config --global alias.br branch
+git config --global alias.ci commit
+
+--------- Rebase ---------
+
+git rebase 												para hacer que se baje todo y los cambios locales se mantengan
+git rebase -i HEAD^										para editar el ultimo commit
+	# p, pick = usar el commit
+	# r, reword = editar el nombre del commit
+	# e, edit = editar el commit, bien sea separar el commit
+	# s, squash = unirlo al commit previo
+	# f, fixup = like "squash", but discard this commit's log message
+	# x, exec = run command (the rest of the line) using shell
+
+--------- Stash ---------
+
+git stash save											guarda lo que tengo en los cambios
+git stash list 											listo los stash guardados
+git stash clear											limpio el stash
+git stash apply											aplica un stash
+git stash pop											aplica un stash y limpia
+
+--------- filter-branch ---------
+
+git filter-branch --tre-filter 'rm -f pass.txt' --prune-empty -- --all			elimina el archivo y elimina el commit si esta vacio
+git filter-branch -f --prune-empty -- --all										elimina los commits que no tienen alrchivos
+
+--------- Cherry Pick ---------
+
+git cherry-pick 9c81603									para copiar un commit de otra rama
+git cherry-pick --no-commit 9c81603						para copiar un commit de otra rama sin hacer commit en la actual
+git cherry-pick -x 9c81603								para copiar un commit de otra rama con un comentario sobre el commit que se copio

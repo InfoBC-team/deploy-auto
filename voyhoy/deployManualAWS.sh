@@ -1,11 +1,13 @@
 #!/bin/sh
-echo "starting deploy to voyhoyrocks from "$1"......"
+echo "Starting deploy to sandbox-voyhoy.sa-east-1.elasticbeanstalk.com from $1"
 
 cd /home/voyhoy/voyhoy-core
-git checkout master
-git pull origin master
+git fetch
+git checkout $1
+git pull origin $1
+
 date=`date`
-echo "| "$date" ###################### voyhoy-core is ready ######################"
+echo "| "$date" ###################### voyhoy-core("$1") is ready ######################"
 
 cd /home/voyhoy/lab-grails-app
 git fetch
@@ -13,7 +15,7 @@ git checkout $1
 git pull origin $1
 
 date=`date`
-echo "| "$date" - ###################### lab-grails-app is ready ######################"
+echo "| "$date" - ###################### lab-grails-app("$1") is ready ######################"
 
 lastCommit=`git log -n 1 --pretty=format:"%cd-%h" --date=short`;
 tiempo=`date +"%k%M%S"`;

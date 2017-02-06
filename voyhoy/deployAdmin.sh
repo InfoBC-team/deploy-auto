@@ -2,8 +2,9 @@
 echo "starting......"
 
 cd /home/voyhoy/voyhoy-core
-git checkout master
-git pull origin master
+git fetch
+git checkout new-vh
+git pull origin new-vh
 date=`date`
 echo "| "$date" ###################### core is ready ######################"
 
@@ -18,7 +19,7 @@ if [ "$1" = "full" ]; then
 
 	version=`git log -n 1 --pretty=format:"%cd-%h" --date=short`
 
-	if [ "$2" = "sandbox" ] && [ ! -f "target/sandbox-$3-$version.war" ]; then
+	if [ "$2" = "sandbox"] || ["$2" = "sandbox-new-vh" ] && [ ! -f "target/sandbox-$3-$version.war" ]; then
 		./grailsw -Dgrails.env=test war target/sandbox-$3-$version.war
 		date=`date`
 		echo "| "$date" ###################### war compiled successfully ######################"

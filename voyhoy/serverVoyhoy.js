@@ -14,31 +14,13 @@ app.post('/deploy', jsonParser, function (req, res) {
   function puts(error, stdout, stderr) { 
     sys.puts(stdout)
   }
-  if (branch == 'testing' || branch == 'production'){
+  if (branch == 'master' || branch == 'legacy'){
     console.log('Starting deploy to '+ branch +' - date '+new Date());
     exec("cd /home/voyhoy && sh deployAWS.sh " + branch, puts);
     res.send('Starting deploy to '+ branch +' (voyhoy) - date '+new Date());
   }else {
     res.send('No changes found (voyhoy)');
   }
-
-});
-
-//deploy to pivotal
-app.get('/deploy-piv/:branch', function(req, res){
-
-  var branch = req.params.branch;
-  if (branch == "branch" || branch == "") {
-    console.log('wrong branch');
-    res.send('wrong branch');
-  } else{
-    function puts(error, stdout, stderr) { 
-      sys.puts(stdout)
-    }
-    console.log('Iniciando el deploy a pivotal de la rama '+ branch +' - '+new Date());
-    exec("cd /home/voyhoy && sh deployPIV.sh "+branch, puts);
-    res.send('Processing deploy');
-  };
 
 });
 
@@ -89,7 +71,7 @@ app.post('/deploy-admin/', jsonParser, function (req, res) {
     sys.puts(stdout)
   }
   console.log('Starting auto deploy - branch '+branch+' - repository '+repository+' - date '+new Date());
-  if (branch == 'sandbox' || branch == 'production'){
+  if (branch == 'sandbox' || branch == 'production' || branch == 'sandbox-new-vh'){
     exec("cd /home/voyhoy && sh deployAdmin.sh full "+branch+" "+repository, puts);
     res.send('Deploy completed');
   }else {

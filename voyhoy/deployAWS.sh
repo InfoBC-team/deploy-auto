@@ -3,17 +3,20 @@ echo "starting......"
 ./grailsw --version
 
 cd /home/voyhoy/voyhoy-core
-git checkout master
-git pull origin master
-date=`date`
-echo "| "$date" ###################### voyhoy-core is ready ######################"
-
-cd /home/voyhoy/lab-grails-app
+git fetch
 git checkout $1
 git pull origin $1
 
 date=`date`
-echo "| "$date" - ###################### lab-grails-app is ready ######################"
+echo "| "$date" ###################### voyhoy-core ("$1") is ready ######################"
+
+cd /home/voyhoy/lab-grails-app
+git fetch
+git checkout $1
+git pull origin $1
+
+date=`date`
+echo "| "$date" - ###################### lab-grails-app ("$1") is ready ######################"
 
 lastCommit=`git log -n 1 --pretty=format:"%cd-%h" --date=short`;
 tiempo=`date +"%k%M%S"`;
@@ -21,46 +24,32 @@ version=$lastCommit"-"$tiempo
 
 version=$(echo "$version" | tr -d '[[:space:]]')
 
-if [ "$1" = "production" ] && [ ! -f "target/voyhoy-$version.war" ]; then
+if [ "$1" = "legacy" ] && [ ! -f "target/legacy.voyhoy.com-$version.war" ]; then
 	./grailsw clean
-	./grailsw war target/voyhoy-$version.war
+	./grailsw war target/legacy.voyhoy.com-$version.war
 	date=`date`
-	echo "| "$date" - ###################### (production) War compiled successfully ######################"
-
-	date=`date`
-	aws s3 cp target/voyhoy-$version.war s3://elasticbeanstalk-sa-east-1-640270128784/voyhoy-$version.war
-	echo "| "$date" - ###################### (production) War uploaded successfully on elasticbeanstalk ######################"
+	echo "| "$date" - ###################### (legacy) War compiled successfully ######################"
 
 	date=`date`
-	aws elasticbeanstalk create-application-version --region sa-east-1 --application-name "My First Elastic Beanstalk Application" --version-label voyhoy-$version.war --source-bundle S3Bucket=elasticbeanstalk-sa-east-1-640270128784,S3Key=voyhoy-$version.war
-	echo "| "$date" - ###################### (production) Application-version created successfully on elasticbeanstal ######################"
+	aws s3 cp target/legacy.voyhoy.com-$version.war s3://elasticbeanstalk-sa-east-1-640270128784/legacy.voyhoy.com-$version.war
+	echo "| "$date" - ###################### (legacy) War uploaded successfully on elasticbeanstalk ######################"
 
-	# eb use cloneprod-1
-	# eb init "My First Elastic Beanstalk Application" --region sa-east-1
-
-	# date=`date`
-	# eb deploy cloneprod-1 --version voyhoy-$version.war
-	# echo "| "$date" - ###################### (production) Deploy on elasticbeanstalk successfull ######################"
+	date=`date`
+	aws elasticbeanstalk create-application-version --region sa-east-1 --application-name "My First Elastic Beanstalk Application" --version-label legacy.voyhoy.com-$version.war --source-bundle S3Bucket=elasticbeanstalk-sa-east-1-640270128784,S3Key=legacy.voyhoy.com-$version.war
+	echo "| "$date" - ###################### (legacy) Application-version created successfully on elasticbeanstal ######################"
 fi
 
-if [ "$1" = "testing" ] && [ ! -f "target/voyhoy-testing-$version.war" ]; then
+if [ "$1" = "master" ] && [ ! -f "target/voyhoy.com-$version.war" ]; then
 	./grailsw clean
-	./grailsw -Dgrails.env=test war target/voyhoy-testing-$version.war
+	./grailsw war target/voyhoy.com-$version.war
 	date=`date`
-	echo "| "$date" - ###################### (testing) War compiled successfully ######################"
-
-	date=`date`
-	aws s3 cp target/voyhoy-testing-$version.war s3://elasticbeanstalk-sa-east-1-640270128784/voyhoy-testing-$version.war
-	echo "| "$date" - ###################### (testing) War uploaded successfully on elasticbeanstalk ######################"
+	echo "| "$date" - ###################### (production-new) War compiled successfully ######################"
 
 	date=`date`
-	aws elasticbeanstalk create-application-version --region sa-east-1 --application-name "My First Elastic Beanstalk Application" --version-label voyhoy-testing-$version.war --source-bundle S3Bucket=elasticbeanstalk-sa-east-1-640270128784,S3Key=voyhoy-testing-$version.war
-	echo "| "$date" - ###################### (testing) Application-version created successfully on elasticbeanstal ######################"
+	aws s3 cp target/voyhoy.com-$version.war s3://elasticbeanstalk-sa-east-1-640270128784/voyhoy.com-$version.war
+	echo "| "$date" - ###################### (production-new) War uploaded successfully on elasticbeanstalk ######################"
 
-	# eb use voyhoyrocks
-	# eb init "My First Elastic Beanstalk Application" --region sa-east-1
-
-	# date=`date`
-	# eb deploy voyhoyrocks --version voyhoy-testing-2015-12-30-79970c5-72204.war
-	# echo "| "$date" - ###################### (testing) Deploy on elasticbeanstalk successfull ######################"
+	date=`date`
+	aws elasticbeanstalk create-application-version --region sa-east-1 --application-name "My First Elastic Beanstalk Application" --version-label voyhoy.com-$version.war --source-bundle S3Bucket=elasticbeanstalk-sa-east-1-640270128784,S3Key=voyhoy.com-$version.war
+	echo "| "$date" - ###################### (production-new) Application-version created successfully on elasticbeanstal ######################"
 fi

@@ -1,0 +1,339 @@
+----------------------------------------------------------------------------------------
+para el deploy de voyhoy
+----------------------------------------------------------------------------------------
+
+para hacer deploy a elasticbeanstalk - manual
+
+http://104.131.154.100:9090/voyhoy/deploy/voyhoy-admin/sandbox/0.2.7/sandbox
+
+
+para ver los logs
+
+http://104.131.154.100:9090/deploy/logs/50
+
+----------------------------------------------------------------------------------------
+
+credenciales github
+================================================================================================================
+latambuses
+labrocks1
+================================================================================================================
+
+grails war
+grails test war
+grails -Dgrails.env=staging war
+
+grails generate-all latambuses.Company
+
+git reset HEAD~1
+
+sudo /usr/local/mysql/support-files/mysql.server start
+
+voyhoy-admin2
+voyhoyAdmin2-env
+
+// para el deploy de voyhoy para pruebas de nosotros
+ssh -i admin.pem ec2-user@54.243.134.255
+sudo su
+tail -f /var/log/tomcat8/catalina.out
+tail -f /home/ec2-user/.pm2/logs/serverVoyhoy-out-0.log 
+
+
+ssh orlando@104.131.154.100
+
+
+voyhoy-admin
+ssh -i voyhoy-chile.pem ec2-user@54.232.215.126
+sudo tail -f /var/log/tomcat8/catalina.out
+
+voy-hoy principal test
+ssh -i scrapekey.pem ec2-user@54.207.86.73
+sudo tail -f /var/log/tomcat7/catalina.out
+
+cd target/work/plugins/kickstart-with-bootstrap-1.1.0/grails-app/conf/
+
+================================================================================================================
+Generar el war
+================================================================================================================
+
+gvm use grails 2.4.5
+cd voyhoy/voyhoy-admin
+git pull origin develop
+grails -Dgrails.env=test war target/voyhoy-admin-test-0.1.4.war
+
+================================================================================================================
+Subir el war a s3
+================================================================================================================
+
+aws s3 cp target/voyhoy-admin-test-0.1.4.war s3://elasticbeanstalk-us-east-1-640270128784/voyhoy-admin-test-0.1.4.war
+
+aws s3 cp target/voyhoy-admin-0.0.1.war s3://elasticbeanstalk-sa-east-1-640270128784/voyhoy-admin-0.0.1.war
+
+================================================================================================================
+ver el detalle de las versiones de la aplicacion
+================================================================================================================
+
+aws elasticbeanstalk describe-application-versions --region us-east-1 --application-name voyhoy-admin2
+
+aws elasticbeanstalk describe-application-versions --region sa-east-1 --application-name "My First Elastic Beanstalk Application"
+ 
+================================================================================================================
+subir una nueva version de la aplicacion y deploy
+================================================================================================================
+
+eb init voyhoy-admin2 --region us-east-1
+
+aws elasticbeanstalk create-application-version --application-name voyhoy-admin2 --version-label voyhoy-admin-test-0.1.4.war --source-bundle S3Bucket=elasticbeanstalk-us-east-1-640270128784,S3Key=voyhoy-admin-test-0.1.4.war
+
+eb deploy voyhoyAdmin2-env --version voyhoy-admin-test-0.1.4.war
+
+
+eb init voyhoyadmin --region sa-east-1
+
+aws elasticbeanstalk create-application-version --region sa-east-1 --application-name voyhoyadmin --version-label voyhoy-admin-0.0.2.war --source-bundle S3Bucket=elasticbeanstalk-sa-east-1-640270128784,S3Key=voyhoy-admin-0.0.1.war
+
+eb deploy voyhoy-admin --version voyhoy-admin-0.0.2.war
+
+
+
+
+aws elasticbeanstalk update-application-version --application-name voyhoy-admin2 --version-label voyhoy-admin-test-0.1.4.war
+
+
+
+
+================================================================================================================
+Reiniciar el server
+================================================================================================================
+
+aws elasticbeanstalk restart-app-server --environment-name voyhoyAdmin2-env
+
+================================================================================================================
+
+
+
+git remote rm origin
+git remote add origin git@github.com:LatAmBuses/voyhoy-admin.git
+
+
+
+
+
+instalar git en amazon voyhoy-admin
+
+instalar git
+sudo su
+yum install curl-devel expat-devel gettext-devel openssl-devel zlib-devel
+
+instalar node
+yum install nodejs npm --enablerepo=epel
+
+install bower
+npm install -g bower
+
+instalar javac
+yum install java-devel
+export JAVA_HOME=/usr/lib/jvm/java-1.7.0
+
+curl -s get.gvmtool.net | bash
+
+## Mac OSX and Linux
+
+1. Download the CLI from github: https://github.com/cloudfoundry/cli/releases
+
+wget wget https://cli.run.pivotal.io/stable?release=linux64-binary&version=6.11.3&source=github-rel
+mv stable\?release\=linux64-binary file2.tgz
+
+2. Extract the tgz file.
+
+tar zxvf file2.tgz
+
+3. Move `cf` to /usr/local/bin
+
+sudo mv cf /usr/local/bin
+
+4. Confirm /usr/local/bin is in your PATH by typing `echo $PATH` at the command line
+5. Type `cf` at the command line
+6. You should see the CLI help if everything is successful
+
+
+cf login -a https://consoleapi.run.pivotal.io
+abel@infobc.co
+infobc1
+cf push voyhoy -p target/voyhoy-test.war
+
+
+http://54.83.192.100:9090/deploy
+
+
+
+/* para deploy manual */
+
+git stash save
+
+git checkout 7df10fcdf90adf4b43980d486e449fc896c1abce
+
+git stash apply && git stash clear
+
+grails -Dgrails.env=test war target/sandbox-testing6.war
+
+cf push voyhoy -p target/sandbox-testing7.war
+
+
+
+/* para deploy manual */
+
+git stash save
+
+git checkout 7df10fcdf90adf4b43980d486e449fc896c1abce
+
+git stash apply && git stash clear
+
+grails -Dgrails.env=test war target/sandbox-testing6.war
+
+cf push voyhoy -p target/sandbox-testing7.war
+
+
+
+
+para hacer el war y el deploy a voyhoy.cfapps manual por consola
+grails -Dgrails.env=test war target/test3.war && cf push voyhoy -p target/test3.war
+
+
+
+
+
+/* para hacer un deploy a voyhoy prod */
+
+./grailsw war target/voyhoy-2015-12-28-46876d1-104701.war
+
+aws s3 cp target/voyhoy-2015-12-28-46876d1-104701.war s3://elasticbeanstalk-sa-east-1-640270128784/voyhoy-2015-12-28-46876d1-104701.war
+
+aws elasticbeanstalk create-application-version --region sa-east-1 --application-name "My First Elastic Beanstalk Application" --version-label voyhoy-2015-12-28-46876d1-104701.war --source-bundle S3Bucket=elasticbeanstalk-sa-east-1-640270128784,S3Key=voyhoy-2015-12-28-46876d1-104701.war
+
+
+===================================================================
+
+para el server de orlando  (ya no existe)
+
+===================================================================
+
+ssh orlando@162.243.127.194
+orlando1
+cf login -a https://api.run.pivotal.io
+elman@infobc.co
+infobc123
+
+
+===================================================================
+
+para revisar los logs de testing
+
+===================================================================
+
+ssh -i ~/.ssh/apploi-production-nginx-redirect.pem ec2-user@107.22.76.118
+find / -name grails.log
+tail -f /usr/share/tomcat7/var/tomcat/logs/grails.log
+
+
+===================================================================
+
+crear un usuario
+
+===================================================================
+* creamos el usuario:
+sudo adduser <newuser>
+
+* le aggregamos permisos de root
+sudo visudo
+<newuser>    ALL=(ALL:ALL) ALL
+
+
+
+===================================================================
+
+para voyhoy, luego de creado un usuario, pasos para instalar todo
+
+===================================================================
+
+sudo iptables -A INPUT -p tcp --dport 5000 -j ACCEPT
+
+sudo su
+npm install express --save
+npm install body-parser
+npm install pm2 -g
+
+pm2 start <file>
+pm2 list
+pm2 show <ID>
+pm2 stop <ID>
+pm2 restart <ID>
+
+instalar la clave SSH -> https://help.github.com/articles/generating-ssh-keys/
+
+* instalar nodejs		
+https://nodejs.org/
+
+* instalar bower		
+sudo npm install bower -g
+
+* bower				
+bower install			
+
+cd grails-app/assets/bower_components/
+rm -R jquery
+
+* configuramos el aws:
+aws configure
+AWS Access Key ID [None]: AKIAJ2H75JEUQKG2W2YQ
+AWS Secret Access Key [None]: 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
+
+* para cf - pivotal
+cf login -a https://api.run.pivotal.io
+
+
+
+
+aws s3 cp target/vheurope-api.war s3://elasticbeanstalk-eu-central-1-640270128784/vheurope-api.war
+
+aws elasticbeanstalk create-application-version --region eu-central-1 --application-name "My First Elastic Beanstalk Application" --version-label vheurope-api.war --source-bundle S3Bucket=elasticbeanstalk-eu-central-1-640270128784,S3Key=vheurope-api.war
+
+eb init "My First Elastic Beanstalk Application" --region eu-central-1
+
+
+eb deploy vheurope-sandbox-env --version vheurope-api.war
+
+
+
+
+Para los deploy:
+---------
+resertrip
+---------
+http://104.131.154.100:9999/deploy
+
+-------
+voyhoy
+-------
+http://104.131.154.100:5000/deploy-piv/hotfix-23.03.2016
+
+
+ssh apploi@104.131.154.100
+ssh ec2-user@apploi-staging-grails-new.pub.use1.apploi.io
+
+
+
+
+
+
+
+
+
+
+
+
+Resertrip - Producción
+ssh -i ~/.ssh/vheurope-sandbox.pem ec2-user@ec2-52-29-193-138.eu-central-1.compute.amazonaws.com
+
+
+

@@ -1,13 +1,15 @@
 #!/bin/sh
 
 cd /home/vheurope/movelia
-git checkout master
-git pull origin master
+git fetch
+git checkout $1
+git pull origin $1
 echo "Listo el plugin de movelia"
 
 cd /home/vheurope/vheurope-core
-git checkout master
-git pull origin master
+git fetch
+git checkout $1
+git pull origin $1
 echo "Listo vheurope-core"
 
 cd /home/vheurope/vheurope-admin
